@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node src/app/api/cron/init.js && next dev --turbopack",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cron":"node src/app/api/cron/init.js"
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",
