@@ -1,4 +1,14 @@
-First, run the development server:
+For Running Build:
+
+steps:
+
+1. npm run cron
+
+2. npm start
+
+---
+
+For Running on the development server:
 
 steps:
 

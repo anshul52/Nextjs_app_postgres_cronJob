@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -14,8 +15,11 @@ export async function GET(req: Request) {
   const offset = (page - 1) * limit;
 
   try {
+    if (!prisma) {
+      throw new Error('Prisma client is not initialized');
+    }
     // Define the base where condition
-    const whereCondition: any = {
+    const whereCondition:Prisma.UserWhereInput = {
       gender: gender || undefined,
       locations: {
         some: {
@@ -26,10 +30,10 @@ export async function GET(req: Request) {
     };
 
     // Prepare select or include
-    let selectOrInclude: any = {};
+    const selectOrInclude: any = {};
     if (fields.length > 0) {
       // Build the select object
-      const select: Record<string, boolean> = {}; // Define type for dynamic keys
+      const select: Record<string, boolean> = {}; 
       fields.forEach((field) => {
         select[field] = true; // Dynamically set selected fields
       });

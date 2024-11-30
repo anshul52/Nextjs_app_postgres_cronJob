@@ -1,17 +1,23 @@
+// import { PrismaClient } from '@prisma/client';
+
+// // Declare the variable for PrismaClient
+// declare global {
+//     var prisma: PrismaClient | undefined;  
+// }
+// if (process.env.NODE_ENV === 'production') {
+//   prisma = new PrismaClient();
+// } else {
+//   if (!global.prisma) {
+//     global.prisma = new PrismaClient();
+//   }
+//   prisma = global.prisma;
+// }
+
+// export default prisma;
+
+
 import { PrismaClient } from '@prisma/client';
 
-declare global {
-    var prisma: PrismaClient | undefined;  
-}
+const prisma = new PrismaClient();  // Instantiate Prisma Client
 
-
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient();
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient();
-  }
-  prisma = global.prisma;
-}
-
-export default prisma;
+export default prisma;  

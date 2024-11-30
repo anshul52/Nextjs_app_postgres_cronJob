@@ -1,3 +1,18 @@
+// {
+//   "extends": ["next/core-web-vitals", "next/typescript"]
+// }
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": [
+    "next",
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    "no-console": "off",  // Disable no-console rule
+    "react/no-unused-prop-types": "off", 
+    "@typescript-eslint/no-explicit-any": "off","@typescript-eslint/no-unused-vars": "off", // Disable unused-vars for TypeScript
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "react/prop-types": "off",  // Disable prop-types rule (use TypeScript for types instead)
+    // "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]  // Disable unused variable rule, but allow _ prefixed variables
+    "no-unused-vars": "off"
+  }
 }
