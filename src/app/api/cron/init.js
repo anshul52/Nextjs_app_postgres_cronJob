@@ -38,12 +38,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var cron = require("node-cron");
 var fetchUsers_1 = require("../../utils/fetchUsers");
-cron.schedule('* * * * *', function () { return __awaiter(void 0, void 0, void 0, function () {
+//this file is using node-cron package to run the cron job and call the funtion fetchUsers() after every 5 min 
+cron.schedule('*/5 * * * *', function () { return __awaiter(void 0, void 0, void 0, function () {
     var error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                // cron.schedule('*/5 * * * *', async () => {
                 console.log("[CRON] Job started at ".concat(new Date().toISOString()));
                 _a.label = 1;
             case 1:

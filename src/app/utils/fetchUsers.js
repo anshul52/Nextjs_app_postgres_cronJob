@@ -1,4 +1,6 @@
 "use strict";
+// import axios from 'axios';
+// import { PrismaClient } from '@prisma/client';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,16 +39,58 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = fetchUsers;
+// const prisma = new PrismaClient();
+// export default async function fetchUsers(): Promise<void> {
+//   try {
+//     console.log(`[FETCH USERS] Fetching users from API...`);
+//     const response = await axios.get('https://randomuser.me/api/', {
+//       params: { results: 5 },
+//     });
+//     const users = response.data.results;
+//     const userData = users.map((user: any) => ({
+//       name: `${user.name.first} ${user.name.last}`,
+//       email: user.email,
+//       gender: user.gender,
+//       createdAt: new Date(),
+//       location: {
+//         city: user.location.city,
+//         country: user.location.country,
+//       },
+//     }));
+//     console.log(`[FETCH USERS] Saving users to database...`);
+//     for (const user of userData) {
+//       await prisma.user.create({
+//         data: {
+//           name: user.name,
+//           email: user.email,
+//           gender: user.gender,
+//           createdAt: user.createdAt,
+//           locations: {
+//             create: {
+//               city: user.location.city,
+//               country: user.location.country,
+//             },
+//           },
+//         },
+//       });
+//     }
+//     console.log(`[FETCH USERS] Successfully saved users.`);
+//   } catch (error) {
+//     console.error(`[FETCH USERS] Error occurred:`, error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
 var axios_1 = require("axios");
 var client_1 = require("@prisma/client");
 var prisma = new client_1.PrismaClient();
 function fetchUsers() {
     return __awaiter(this, void 0, void 0, function () {
-        var response, users, userData, _i, userData_1, user, error_1;
+        var response, users, userData, createdUsers, createdUserEmails, usersWithIds_1, locationData, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 6, 7, 9]);
+                    _a.trys.push([0, 5, 6, 8]);
                     console.log("[FETCH USERS] Fetching users from API...");
                     return [4 /*yield*/, axios_1.default.get('https://randomuser.me/api/', {
                             params: { results: 5 },
@@ -54,54 +98,53 @@ function fetchUsers() {
                 case 1:
                     response = _a.sent();
                     users = response.data.results;
+                    console.log("[FETCH USERS] Saving users to database...");
                     userData = users.map(function (user) { return ({
                         name: "".concat(user.name.first, " ").concat(user.name.last),
                         email: user.email,
                         gender: user.gender,
                         createdAt: new Date(),
-                        location: {
-                            city: user.location.city,
-                            country: user.location.country,
-                        },
                     }); });
-                    console.log("[FETCH USERS] Saving users to database...");
-                    _i = 0, userData_1 = userData;
-                    _a.label = 2;
+                    return [4 /*yield*/, prisma.user.createMany({
+                            data: userData,
+                            skipDuplicates: true, // Optional: prevent errors if users already exist
+                        })];
                 case 2:
-                    if (!(_i < userData_1.length)) return [3 /*break*/, 5];
-                    user = userData_1[_i];
-                    return [4 /*yield*/, prisma.user.create({
-                            data: {
-                                name: user.name,
-                                email: user.email,
-                                gender: user.gender,
-                                createdAt: user.createdAt,
-                                locations: {
-                                    create: {
-                                        city: user.location.city,
-                                        country: user.location.country,
-                                    },
-                                },
+                    createdUsers = _a.sent();
+                    createdUserEmails = users.map(function (user) { return user.email; });
+                    return [4 /*yield*/, prisma.user.findMany({
+                            where: {
+                                email: { in: createdUserEmails },
                             },
                         })];
                 case 3:
-                    _a.sent();
-                    _a.label = 4;
+                    usersWithIds_1 = _a.sent();
+                    locationData = users.map(function (user) {
+                        var _a;
+                        return ({
+                            city: user.location.city,
+                            country: user.location.country,
+                            userId: (_a = usersWithIds_1.find(function (u) { return u.email === user.email; })) === null || _a === void 0 ? void 0 : _a.id, // Find the correct userId
+                        });
+                    });
+                    // Insert all locations in one batch
+                    return [4 /*yield*/, prisma.location.createMany({
+                            data: locationData,
+                        })];
                 case 4:
-                    _i++;
-                    return [3 /*break*/, 2];
+                    // Insert all locations in one batch
+                    _a.sent();
+                    console.log("[FETCH USERS] Successfully saved users and locations.");
+                    return [3 /*break*/, 8];
                 case 5:
-                    console.log("[FETCH USERS] Successfully saved users.");
-                    return [3 /*break*/, 9];
-                case 6:
                     error_1 = _a.sent();
                     console.error("[FETCH USERS] Error occurred:", error_1);
-                    return [3 /*break*/, 9];
-                case 7: return [4 /*yield*/, prisma.$disconnect()];
-                case 8:
+                    return [3 /*break*/, 8];
+                case 6: return [4 /*yield*/, prisma.$disconnect()];
+                case 7:
                     _a.sent();
                     return [7 /*endfinally*/];
-                case 9: return [2 /*return*/];
+                case 8: return [2 /*return*/];
             }
         });
     });
